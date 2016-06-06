@@ -1,0 +1,9 @@
+c:\users\max\documents\visual studio 2013\Projects\ClickerHeroesCalc\ClickerHeroesCalc\bin\Debug\ClickerHeroesCalc.exe.config
+c:\users\max\documents\visual studio 2013\Projects\ClickerHeroesCalc\ClickerHeroesCalc\obj\Debug\ClickerHeroesCalc.csprojResolveAssemblyReference.cache
+c:\users\max\documents\visual studio 2013\Projects\ClickerHeroesCalc\ClickerHeroesCalc\obj\Debug\ClickerHeroesCalc.frmMain.resources
+c:\users\max\documents\visual studio 2013\Projects\ClickerHeroesCalc\ClickerHeroesCalc\obj\Debug\ClickerHeroesCalc.Properties.Resources.resources
+c:\users\max\documents\visual studio 2013\Projects\ClickerHeroesCalc\ClickerHeroesCalc\obj\Debug\ClickerHeroesCalc.csproj.GenerateResource.Cache
+c:\users\max\documents\visual studio 2013\Projects\ClickerHeroesCalc\ClickerHeroesCalc\bin\Debug\ClickerHeroesCalc.exe
+c:\users\max\documents\visual studio 2013\Projects\ClickerHeroesCalc\ClickerHeroesCalc\bin\Debug\ClickerHeroesCalc.pdb
+c:\users\max\documents\visual studio 2013\Projects\ClickerHeroesCalc\ClickerHeroesCalc\obj\Debug\ClickerHeroesCalc.exe
+c:\users\max\documents\visual studio 2013\Projects\ClickerHeroesCalc\ClickerHeroesCalc\obj\Debug\ClickerHeroesCalc.pdb
