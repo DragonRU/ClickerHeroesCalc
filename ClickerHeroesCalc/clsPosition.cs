@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace ClickerHeroesCalc
 {
@@ -13,8 +14,7 @@ namespace ClickerHeroesCalc
 		public Position(Position Pos)
 		{
 			Heroes = new List<Hero>(Pos.Heroes.Count());
-			Pos.Heroes.ForEach((item)
-				 =>
+			Pos.Heroes.ForEach((item) =>
 				 {
 					 Heroes.Add((Hero)item.Clone());
 				 });
@@ -263,6 +263,64 @@ namespace ClickerHeroesCalc
 				return Result;
 			}
 		}
+
+		public string SaveCode()
+		{
+			string Result = "";
+			Heroes.ForEach((item) =>
+				{
+					Hero h = (Hero)item;
+					Result += string.Format(" {0}, {1};", h.CurrentLevel, h.GlideLevel);
+				});
+			return Result;
+		}
+
+		public bool LoadCode(string Code)
+		{
+			string[] HeroInfo = Code.Split(';');
+			if (HeroInfo.Length != 40)
+			{
+				MessageBox.Show("Incorrect load string");
+				return false;
+			}
+			for (int i = 0; i < 39; i++)
+			{
+				string[] HeroDetails = HeroInfo[i].Split(',');
+				if (HeroDetails.Length != 2)
+				{
+					MessageBox.Show("Incorrect load string");
+					return false;
+				}
+				int Level;
+				int Glide;
+				if (!(int.TryParse(HeroDetails[0].Trim(), out Level)))
+				{
+					MessageBox.Show("Incorrect load string");
+					return false;
+				}
+				if (!(int.TryParse(HeroDetails[1].Trim(), out Glide)))
+				{
+					MessageBox.Show("Incorrect load string");
+					return false;
+				}
+				Heroes[i].LoadLevels(Level, Glide);
+			}
+			return true;
+		}
+
+		public double GlobalDPSMult
+		{
+			get
+			{
+				double Result = 1;
+				foreach (Hero h in Heroes)
+				{
+					Result *= h.GlobalDPSMult;
+				}
+				return Result;
+			}
+		}
+
 
 		public void NextStep(out int ID, out int Type, out double DpsIncrease, out double Cost)
 		{

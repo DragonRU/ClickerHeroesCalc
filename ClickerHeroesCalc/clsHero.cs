@@ -14,6 +14,9 @@ namespace ClickerHeroesCalc
 		public int GlideLevel { get; set; }
 		public double BaseCost;
 		public double BaseDPS;
+
+		public double AgraivLevel;
+		public double DogcogReduction;
 		public List<Skill> Skills;
 
 		public object Clone()
@@ -31,6 +34,12 @@ namespace ClickerHeroesCalc
 			Skills = new List<Skill>();
 		}
 
+		public void LoadLevels(int Level, int Glide)
+		{
+			CurrentLevel = Level;
+			GlideLevel = Glide;
+		}
+
 		public double DPS(int Level)
 		{
 			double TotalMult = 1;
@@ -40,7 +49,7 @@ namespace ClickerHeroesCalc
 				if ((s.Level <= Level) && (s.Type == 0))  // We do not calculate global multipliers here
 					TotalMult = TotalMult * (1 + (s.Mult / 100));
 			}
-			double tmpDPS = BaseDPS * Level * (1 + GlideLevel / 2.0) * TotalMult;
+			double tmpDPS = BaseDPS * Level * (1 + GlideLevel * (50 + AgraivLevel * 2) / 100.0) * TotalMult;
 
 			if (Level >= 200)
 			{
@@ -50,8 +59,32 @@ namespace ClickerHeroesCalc
 				tmpDPS = tmpDPS * Math.Pow(4, Powerups25);
 				tmpDPS = tmpDPS * Math.Pow(2.5, Powerups1000);
 			}
+			if (ID >= 25) //starting from Dread Knight
+			{
+				if (Level > 500)
+				{
+					int BigLevelups = (Level - 500) / 25;
+					if (BigLevelups > 9)
+						BigLevelups = 9;
+					tmpDPS = tmpDPS * Math.Pow(1.25, BigLevelups);
+				}
+			}
 
 			return tmpDPS;
+		}
+
+		public double GlobalDPSMult
+		{
+			get
+			{
+				double Result = 1;
+				foreach (Skill s in Skills)
+				{
+					if ((s.Level <= CurrentLevel) && (s.Type == 1))
+						Result = Result * (1 + (s.Mult / 100));
+				}
+				return Result;
+			}
 		}
 
 		public double CurrentDPS
@@ -113,7 +146,7 @@ namespace ClickerHeroesCalc
 					return Math.Floor(BaseCost * Math.Pow(1.07, Level)) + NextSkillCost;
 				}
 			}
-			return Math.Floor(BaseCost * Math.Pow(1.07, Level));
+			return (Math.Floor(BaseCost * Math.Pow(1.07, Level))) * (1 - DogcogReduction / 100);
 		}
 
 		public double NextLevelCost()
@@ -128,7 +161,7 @@ namespace ClickerHeroesCalc
 			double TotalCost = 0;
 			while (i+1 < Checkpoint)
 			{
-				TotalCost += BaseCost * Math.Pow(1.07, i);
+				TotalCost += BaseCost * Math.Pow(1.07, i) * (1 - DogcogReduction / 100);
 				i++;
 			}
 			TotalCost += LevelCost(i);
@@ -144,7 +177,7 @@ namespace ClickerHeroesCalc
 			int i = CurrentLevel;
 			while (i < Next1K)
 			{
-				TotalCost += BaseCost * Math.Pow(1.07, i);
+				TotalCost += BaseCost * Math.Pow(1.07, i) * (1 - DogcogReduction / 100);
 				i++;
 			}
 			return TotalCost;
@@ -172,7 +205,23 @@ namespace ClickerHeroesCalc
 			if (CurrentLevel + 1 == NextCheckpoint(CurrentLevel))
 				return DpsIncreaseOnCheckpoint25(GlobalDPS);
 			else
-				return DPS(CurrentLevel + 1) - CurrentDPS;
+			{
+				bool Allow1LevelInc = true;
+				if (ID < 23)
+				{
+					Allow1LevelInc = false;
+					foreach (Skill s in Skills)
+					{
+						if (s.Level > CurrentLevel)
+							Allow1LevelInc = true;
+					}
+				}
+
+				if (Allow1LevelInc)
+					return DPS(CurrentLevel + 1) - CurrentDPS;
+				else
+					return 0;
+			}
 		}
 
 		public double DpsIncreaseOnCheckpoint1000()
@@ -185,6 +234,12 @@ namespace ClickerHeroesCalc
 				int Next1K = (CurrentLevel / 1000 + 1) * 1000;
 				return DPS(Next1K) - CurrentDPS;
 			}
+		}
+
+		public void SetAncientLevels(double Agraiv, double Dogcog)
+		{
+			AgraivLevel = Agraiv;
+			DogcogReduction = Dogcog;
 		}
 
 	}
